@@ -1,0 +1,21 @@
+spring:
+    # Where the app connects. Host/port/db must match compose.yaml's postgres service.
+    datasource:
+        url: jdbc:postgresql://localhost:5432/ledger
+        username: ledger
+        password: ledger
+
+    jpa:
+        # validate = Hibernate checks entities against the real schema at boot and
+        # fails fast on mismatch, but never alters it. Flyway owns the schema.
+        hibernate.ddl-auto: validate
+        # Closes the persistence context at the end of the service call instead of
+        # keeping it open through view rendering. Lazy loads in a controller then
+        # throw loudly rather than silently firing N queries mid-response.
+        open-in-view: false
+        # Batch inserts/updates into groups of 25 round-trips instead of one each.
+        properties.hibernate.jdbc.batch_size: 25
+
+    # Runs db/migration/V*.sql on startup, in version order, once each.
+    flyway:
+        enabled: true

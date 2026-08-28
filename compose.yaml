@@ -1,0 +1,18 @@
+services:
+  db:
+    # alpine = same postgres, ~10x smaller image. 16 pins the major version so a
+    # future postgres release can't change behaviour under you.
+    image: postgres:16-alpine
+    # The postgres image creates this db + user + password on first boot only
+    # (it's a no-op once the data volume exists). Must match application.yml.
+    environment:
+      POSTGRES_DB: ledger
+      POSTGRES_USER: ledger
+      POSTGRES_PASSWORD: ledger
+    # host:container — exposes the db on localhost:5432 for the app and psql.
+    ports: ["5432:5432"]
+    # "container is up" != "postgres accepts connections". pg_isready is the
+    # difference; without this the app can start first and fail to connect.
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ledger"]
+      interval: 10s
