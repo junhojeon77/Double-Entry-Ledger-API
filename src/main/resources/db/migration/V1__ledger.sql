@@ -14,7 +14,7 @@ create table transfer (
     id uuid primary key,
     idempotency_key text not null unique,
     request_hash text not null,
-    status text not null, --- PENDING, POSTED, FAILED
+    status text not null, 
     source_account_id uuid not null references account(id),
     target_account_id uuid not null references account(id),
     amount_minor bigint not null check(amount_minor > 0),
@@ -35,3 +35,4 @@ create table posting (
 );
 
 create index posting_account_idx on posting(account_id, created_at);
+create index posting_transfer_idx on posting(transfer_id, created_at);
