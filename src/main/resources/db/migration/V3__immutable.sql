@@ -4,7 +4,6 @@ begin
 end $$ language plpgsql;
 
 create trigger posting_append_only
-    before update or delete on postings
+    before update or delete on posting
     for each row execute procedure reject_mutation();
 
-    
