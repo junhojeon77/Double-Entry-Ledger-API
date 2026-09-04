@@ -1,3 +1,18 @@
+-- V1: the three tables the whole service is built on.
+--
+-- WHAT: account (who holds money), transfer (an intent to move it),
+-- posting (the immutable double-entry lines that actually moved it).
+--
+-- WHY THREE TABLES: a transfer is a *request* and can fail. A posting is a
+-- *fact* and never changes. Keeping them apart means a failed transfer leaves
+-- a row explaining why, without any postings — you can audit rejections.
+--
+-- MONEY MODEL: amounts are always positive bigints; direction ('DEBIT'/'CREDIT')
+-- carries the sign. Balances are bigint minor units, never numeric/float.
+--
+-- FUTURE: V4 will add the idempotency_record table and scope idempotency_key by
+-- client_id (two API consumers may legitimately both send "key-1").
+
 create table account (
     id uuid primary key,
     account_number text not null unique,
